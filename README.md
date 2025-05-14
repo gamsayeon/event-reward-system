@@ -14,7 +14,7 @@ NestJS 기반 마이크로서비스 아키텍처(MSA)로 설계된 **이벤트 �
 |---------------|---------------------------|
 | 언어           | TypeScript               |
 | 런타임         | Node.js 18 (고정)         |
-| 프레임워크     | NestJS (최신 버전)        |
+| 프레임워크     | NestJS (11.0.7)        |
 | 인증 방식      | JWT                      |
 | DB            | MongoDB                  |
 | 배포/실행 도구 | Docker + docker-compose |

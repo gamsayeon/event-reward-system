@@ -1,0 +1,56 @@
+@startuml EventDetailRequest
+
+actor User
+participant GatewayServer
+participant AuthServer
+participant EventServer
+participant MongoDB
+
+
+== 이벤트 상세 조회 요청 ==
+User -> GatewayServer : 이벤트 상세 조회 요청 (JWT, 이벤트 ID)
+activate GatewayServer
+
+GatewayServer -> AuthServer : JWT 검증 및 역할 확인 (USER, OPERATOR, ADMIN, AUDITOR)
+deactivate GatewayServer
+activate AuthServer
+
+alt JWT 유효성 실패
+    AuthServer --> GatewayServer : 인증 실패
+    activate GatewayServer
+
+    GatewayServer --> User : 인증 실패 (로그인 필요)
+    deactivate GatewayServer
+
+else 역할 확인 성공
+    AuthServer --> GatewayServer : 검증 결과 반환
+    deactivate AuthServer
+    activate GatewayServer
+
+    GatewayServer -> EventServer : 이벤트 상세 조회 요청 (이벤트 ID 포함)
+    deactivate GatewayServer
+    activate EventServer
+
+    EventServer -> MongoDB : DB에서 이벤트 상세 정보 조회
+    activate MongoDB
+    alt DB 조회 실패
+        MongoDB --> EventServer : DB 조회 실패
+        EventServer --> GatewayServer : DB 조회 실패
+        activate GatewayServer
+
+        GatewayServer --> User : 이벤트 상세 조회 실패 (DB 오류)
+        deactivate GatewayServer
+
+    else 조회 성공
+        MongoDB --> EventServer : 이벤트 상세 정보 반환
+        deactivate MongoDB
+        EventServer --> GatewayServer : 이벤트 상세 정보 반환
+        deactivate EventServer
+        activate GatewayServer
+
+        GatewayServer --> User : 이벤트 상세 정보 반환
+        deactivate GatewayServer
+    end
+end
+
+@enduml

@@ -1,5 +1,4 @@
-# EVENT-REWARD-SYSTEM
-# 이벤트 보상 시스템 (NestJS + MSA + MongoDB)
+# 이벤트 보상 시스템
 
 ## 프로젝트 개요
 
@@ -105,4 +104,43 @@ NestJS 기반 마이크로서비스 아키텍처(MSA)로 설계된 **이벤트 �
      - 필터링 기능 제공: 이벤트별, 요청 상태별 기준으로 조회 가능
 
 ---
+<details>
+  <summary>시퀀스 다이어그램 보기</summary>
+
+  <br>
+
+  ## Full Sequence  
+  ![image](https://github.com/user-attachments/assets/d0bfd6f1-6f16-4850-a6c7-8f86f98197dd)
+
+  <details>
+    <summary>View Detail Sequence</summary>
+
+   ### 유저 등록 시퀀스
+   ![image](https://github.com/user-attachments/assets/089cede7-bde7-4c43-9c4c-60a36a9cb415)
+   
+   ### 로그인 & JWT 발급 시퀀스
+   ![image](https://github.com/user-attachments/assets/01a87513-d920-44fe-81c1-0c26db6257c7)
+
+   ### 이벤트 등록 요청
+   ![image](https://github.com/user-attachments/assets/92fa9401-a355-4c48-bd4a-95a9fd11603c)
+
+
+   ### 이벤트 목록 조회 요청
+   ![image](https://github.com/user-attachments/assets/5606a020-9644-4450-b717-eaff1dfef5f0)
+
+   ### 이벤트 상세 조회 요청
+   ![image](https://github.com/user-attachments/assets/0bc40230-a67e-4d0e-a761-4e124ffd44d3)
+
+   ### 보상 등록 요청
+   ![image](https://github.com/user-attachments/assets/06b9728f-f355-42c2-90fe-8a9b95a50244)
+
+   ### 보상 요청
+   ![image](https://github.com/user-attachments/assets/c15f61c1-d6ea-41f9-9907-bd0722030e1c)
+
+   ### 보상 요청 이력 조회
+   ![image](https://github.com/user-attachments/assets/ccb56a57-64b5-4f38-abc7-7c06cc2eadc6)
+
+  </details>
+</details>
+
 

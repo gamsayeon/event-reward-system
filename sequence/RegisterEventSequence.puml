@@ -1,0 +1,66 @@
+@startuml RegisterEvent
+
+actor User
+participant GatewayServer
+participant AuthServer
+participant EventServer
+participant MongoDB
+
+== 이벤트 등록 요청 ==
+
+User -> GatewayServer : 이벤트 등록 요청 (JWT 포함, 이벤트 데이터)
+activate GatewayServer
+
+GatewayServer -> AuthServer : JWT 검증 및 Role 확인 요청
+deactivate GatewayServer
+activate AuthServer
+
+AuthServer -> AuthServer : JWT 검증
+AuthServer -> AuthServer : Role(OPERATOR / ADMIN) 확인
+
+alt 인증 실패 or 권한 없음
+    AuthServer --> GatewayServer : 인증 실패 응답 (권한 부족)
+    activate GatewayServer
+
+    GatewayServer --> User : 이벤트 등록 실패 (권한 부족)
+    deactivate GatewayServer
+
+else 인증 성공
+    AuthServer --> GatewayServer : 인증 및 권한 확인 성공
+    deactivate AuthServer
+    activate GatewayServer
+
+    GatewayServer -> EventServer : 이벤트 등록 요청 (이벤트 데이터)
+    deactivate GatewayServer
+    activate EventServer
+
+    EventServer -> MongoDB : 이벤트 정보 저장
+    deactivate EventServer
+    activate MongoDB
+
+    alt DB 저장 실패
+        MongoDB --> EventServer : 저장 실패
+        activate EventServer
+
+        EventServer --> GatewayServer : 이벤트 등록 실패
+        deactivate EventServer
+        activate GatewayServer
+
+        GatewayServer --> User : 등록 실패 (DB 오류)
+        deactivate GatewayServer
+
+    else 저장 성공
+        MongoDB --> EventServer : 저장 완료
+        deactivate MongoDB
+        activate EventServer
+
+        EventServer --> GatewayServer : 등록 성공
+        deactivate EventServer
+        activate GatewayServer
+
+        GatewayServer --> User : 등록 성공
+        deactivate GatewayServer
+    end
+end
+
+@enduml

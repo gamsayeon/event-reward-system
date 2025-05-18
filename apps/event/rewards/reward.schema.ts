@@ -1,12 +1,15 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
-export type RewardDocument = Reward & Document;
+export type RewardDocument = Reward & Document & { _id: Types.ObjectId };
 
 @Schema()
 export class Reward {
   @Prop({ required: true })
-  type: string;
+  rewardType: string;
+
+  @Prop()
+  rewardName?: string;
 
   @Prop({ required: true })
   quantity: number;

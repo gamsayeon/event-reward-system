@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './events.dto';
+import { CreateRewardDto } from '../rewards/reward.dto';
 import { Event } from './events.schema';
 
 @Controller()
@@ -31,5 +32,13 @@ export class EventsController {
       throw new NotFoundException('Event not found');
     }
     return event;
+  }
+
+  @Post(':id/rewards')
+  async addReward(
+    @Param('id') eventId: string,
+    @Body() rewardDto: CreateRewardDto,
+  ) {
+    return this.eventsService.addReward(eventId, rewardDto);
   }
 }

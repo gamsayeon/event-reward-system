@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type EventDocument = Event & Document;
 
@@ -19,6 +19,9 @@ export class Event {
 
   @Prop({ required: true })
   status: string;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Reward' }], default: [] })
+  rewards: Types.ObjectId[];
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);

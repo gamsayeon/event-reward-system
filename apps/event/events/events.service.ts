@@ -4,7 +4,9 @@ import { Event, EventDocument } from './events.schema';
 import { Reward, RewardDocument } from '../rewards/reward.schema';
 import { Model } from 'mongoose';
 import { CreateEventDto } from './events.dto';
+import { UpdateEventDto } from './update-events.dto';
 import { CreateRewardDto } from '../rewards/reward.dto';
+import { UpdateRewardDto } from '../rewards/update-reward.dto';
 
 @Injectable()
 export class EventsService {
@@ -26,6 +28,19 @@ export class EventsService {
     return this.eventModel.findById(id).populate('rewards').exec();
   }
 
+  async updateEvent(
+    eventId: string,
+    updateEventDto: UpdateEventDto,
+  ): Promise<Event> {
+    const event = await this.eventModel.findById(eventId);
+    if (!event) {
+      throw new NotFoundException('Event not found');
+    }
+
+    Object.assign(event, updateEventDto);
+    return event.save();
+  }
+
   async addReward(eventId: string, rewardDto: CreateRewardDto): Promise<Event> {
     const event = await this.eventModel.findById(eventId);
     if (!event) {
@@ -38,5 +53,18 @@ export class EventsService {
     event.rewards = [...event.rewards, reward._id];
 
     return event.save();
+  }
+
+  async updateReward(
+    rewardId: string,
+    updateRewardDto: UpdateRewardDto,
+  ): Promise<Reward> {
+    const reward = await this.rewardModel.findById(rewardId);
+    if (!reward) {
+      throw new NotFoundException('Reward not found');
+    }
+
+    Object.assign(reward, updateRewardDto);
+    return reward.save();
   }
 }

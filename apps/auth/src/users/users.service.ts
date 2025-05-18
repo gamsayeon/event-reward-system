@@ -19,10 +19,10 @@ export class UsersService {
       password: hashed,
       roles,
     });
-    return createdUser.save();
+    return await createdUser.save();
   }
 
   async findByUsername(username: string): Promise<User | null> {
-    return this.userModel.findOne({ username }).exec();
+    return await this.userModel.findOne({ username }).exec();
   }
 }

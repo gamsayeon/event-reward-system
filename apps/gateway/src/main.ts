@@ -21,13 +21,30 @@ async function bootstrap() {
   );
   
 
-  // '/event' 경로는 Event Server(포트 3002)로 프록시
+  // '/events' 경로는 Event Server(포트 3002)로 프록시
   app.use(
-    '/event',
+    '/events',
     createProxyMiddleware({
       target: eventTarget,
       changeOrigin: true,
-      pathRewrite: { '^/event': '' },
+    }),
+  );
+
+  // '/rewards' 경로는 Event Server(포트 3002)로 프록시
+  app.use(
+    '/rewards',
+    createProxyMiddleware({
+      target: eventTarget,
+      changeOrigin: true,
+    }),
+  );
+
+  // '/reward-requests' 경로는 Event Server(포트 3002)로 프록시
+  app.use(
+    '/reward-requests',
+    createProxyMiddleware({
+      target: eventTarget,
+      changeOrigin: true,
     }),
   );
 

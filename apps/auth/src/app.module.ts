@@ -1,4 +1,3 @@
-// src/app.module.ts
 import { Module } from '@nestjs/common';
 import { HealthController } from './health.controller';
 import { ConfigModule } from '@nestjs/config';

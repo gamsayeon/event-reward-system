@@ -35,7 +35,7 @@ export class EventsController {
   @Get('/reward-requests')
   async getRewardRequests(
     @Headers('X-User-Id') userId: string,
-    @Headers('X-User-Role') role: string,
+    @Headers('X-User-Role') role: string | string[],
     @Query('eventId') eventId?: string,
     @Query('status') status?: string,
   ): Promise<any[]> {
@@ -43,8 +43,11 @@ export class EventsController {
       throw new BadRequestException('권한 정보가 부족합니다.');
     }
 
-    // 관리자 계열은 전체 조회 + 필터링 허용
-    if (['ADMIN', 'AUDITOR', 'OPERATOR'].includes(role.toUpperCase())) {
+    console.log(role);
+    const roles = Array.isArray(role)
+      ? role.map((r) => r.toUpperCase())
+      : [role.toUpperCase()];
+    if (roles.some((r) => ['ADMIN', 'AUDITOR', 'OPERATOR'].includes(r))) {
       return this.eventsService.findAllRewardRequests({ eventId, status });
     }
 

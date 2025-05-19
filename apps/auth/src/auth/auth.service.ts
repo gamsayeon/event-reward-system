@@ -2,7 +2,7 @@ import * as common from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '../users/user.schema';
+import { UserDocument } from '../users/user.schema';
 
 @common.Injectable()
 export class AuthService {
@@ -22,10 +22,11 @@ export class AuthService {
     return null;
   }
 
-  async login(user: User) {
+  async login(user: UserDocument) {
+    const { _id: userId } = user;
     const payload = {
       username: user.username,
-      sub: user._id,
+      sub: userId,
       roles: user.roles,
     };
     return {

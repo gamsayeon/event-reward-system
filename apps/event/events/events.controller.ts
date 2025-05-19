@@ -6,6 +6,9 @@ import {
   Param,
   Patch,
   Post,
+  Headers,
+  Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { CreateEventDto } from './events.dto';
@@ -27,6 +30,28 @@ export class EventsController {
   @Get()
   findAll(): Promise<Event[]> {
     return this.eventsService.findAll();
+  }
+
+  @Get('/reward-requests')
+  async getRewardRequests(
+    @Headers('X-User-Id') userId: string,
+    @Headers('X-User-Role') role: string,
+    @Query('eventId') eventId?: string,
+    @Query('status') status?: string,
+  ): Promise<any[]> {
+    if (!role) {
+      throw new BadRequestException('권한 정보가 부족합니다.');
+    }
+
+    // 관리자 계열은 전체 조회 + 필터링 허용
+    if (['ADMIN', 'AUDITOR', 'OPERATOR'].includes(role.toUpperCase())) {
+      return this.eventsService.findAllRewardRequests({ eventId, status });
+    }
+
+    return this.eventsService.findUserRewardRequests(userId, {
+      eventId,
+      status,
+    });
   }
 
   @Get(':id')
@@ -60,5 +85,13 @@ export class EventsController {
     @Body() updateRewardDto: UpdateRewardDto,
   ): Promise<Reward> {
     return this.eventsService.updateReward(rewardId, updateRewardDto);
+  }
+
+  @Post(':eventId/request-reward')
+  async requestReward(
+    @Param('eventId') eventId: string,
+    @Headers('X-User-Id') userId: string,
+  ): Promise<any> {
+    return this.eventsService.requestReward(userId, eventId);
   }
 }

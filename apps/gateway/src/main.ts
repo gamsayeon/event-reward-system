@@ -30,15 +30,6 @@ async function bootstrap() {
     }),
   );
 
-  // '/reward-requests' 경로는 Event Server(포트 3002)로 프록시
-  app.use(
-    '/reward-requests',
-    createProxyMiddleware({
-      target: eventTarget,
-      changeOrigin: true,
-    }),
-  );
-
   await app.listen(port);
 }
 bootstrap();

@@ -1,18 +1,30 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ConflictException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Event, EventDocument } from './events.schema';
 import { Reward, RewardDocument } from '../rewards/reward.schema';
+import {
+  RewardRequest,
+  RewardRequestDocument,
+} from '../rewards/reward-request.schema';
 import { Model } from 'mongoose';
 import { CreateEventDto } from './events.dto';
 import { UpdateEventDto } from './update-events.dto';
 import { CreateRewardDto } from '../rewards/reward.dto';
 import { UpdateRewardDto } from '../rewards/update-reward.dto';
+import { RewardRequestQuery } from '../rewards/RewardRequestQuery';
+import { RewardRequestFilter } from '../rewards/RewardRequestFilter';
 
 @Injectable()
 export class EventsService {
   constructor(
     @InjectModel(Event.name) private eventModel: Model<EventDocument>,
     @InjectModel(Reward.name) private rewardModel: Model<RewardDocument>,
+    @InjectModel(RewardRequest.name)
+    private rewardRequestModel: Model<RewardRequestDocument>,
   ) {}
 
   async create(createEventDto: CreateEventDto): Promise<Event> {
@@ -66,5 +78,45 @@ export class EventsService {
 
     Object.assign(reward, updateRewardDto);
     return reward.save();
+  }
+
+  async requestReward(userId: string, eventId: string) {
+    const event = await this.findById(eventId);
+    if (!event) {
+      throw new NotFoundException('Event not found');
+    }
+    const existingRequest = await this.rewardRequestModel.findOne({
+      userId,
+      eventId,
+    });
+
+    if (existingRequest) {
+      throw new ConflictException('Reward already requested');
+    }
+
+    await this.rewardRequestModel.create({
+      userId,
+      eventId,
+      status: 'SUCCESS',
+      requestedAt: new Date(),
+    });
+    return { success: true, message: 'Reward requested successfully' };
+  }
+
+  async findAllRewardRequests(filter: RewardRequestFilter) {
+    const query: RewardRequestQuery = {};
+    if (filter.eventId) query.eventId = filter.eventId;
+    if (filter.status) query.status = filter.status;
+
+    return this.rewardRequestModel.find().lean();
+  }
+
+  // 유저 개인 이력 조회
+  async findUserRewardRequests(userId: string, filter: RewardRequestFilter) {
+    const query: RewardRequestQuery = { userId };
+    if (filter.eventId) query.eventId = filter.eventId;
+    if (filter.status) query.status = filter.status;
+
+    return this.rewardRequestModel.find(query).lean();
   }
 }

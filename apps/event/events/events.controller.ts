@@ -43,7 +43,6 @@ export class EventsController {
       throw new BadRequestException('권한 정보가 부족합니다.');
     }
 
-    console.log(role);
     const roles = Array.isArray(role)
       ? role.map((r) => r.toUpperCase())
       : [role.toUpperCase()];

@@ -105,7 +105,7 @@ NestJS 기반 마이크로서비스 아키텍처(MSA)로 설계된 **이벤트 �
 
 ---
 <details>
-  <summary>시퀀스 다이어그램 보기</summary>
+  <summary><h2 style="display: inline; font-weight: bold;"> 시퀀스 다이어그램 보기</h2></summary>
 
   <br>
 
@@ -143,4 +143,82 @@ NestJS 기반 마이크로서비스 아키텍처(MSA)로 설계된 **이벤트 �
   </details>
 </details>
 
+<details>
+<summary><h2 style="display: inline; font-weight: bold;"> 실행 방법 (Docker Compose)</h2></summary>
+
+  
+### 1. Docker 및 Docker Compose 설치 확인
+- 먼저 Docker와 Docker Compose가 설치되어 있는지 확인합니다.
+~~~bash
+docker --version
+docker-compose --version
+~~~
+- 설치가 안 되어 있다면, [Docker 공식 설치 가이드](https://docs.docker.com/get-docker/)를 참고하세요.
+
+---
+
+### 2. Docker Compose 실행
+프로젝트 루트(또는 `docker-compose.yml` 파일이 위치한 디렉토리)에서 아래 명령어로 컨테이너를 실행합니다:
+~~~bash
+docker-compose up -d
+~~~
+- `-d` 옵션은 백그라운드 실행을 의미합니다.
+
+---
+
+### 3. 실행 중인 컨테이너 상태 확인
+아래 명령어로 컨테이너들이 잘 실행 중인지 확인할 수 있습니다:
+~~~bash
+docker-compose ps
+~~~
+
+---
+
+### 4. 로그 확인
+특정 서비스 로그를 보고 싶을 때:
+~~~bash
+docker-compose logs -f <서비스명>
+~~~
+예시:
+~~~bash
+docker-compose logs -f auth
+~~~
+
+---
+
+### 5. 컨테이너 중지 및 제거
+실행 중인 컨테이너를 중지하고 제거하려면:
+~~~bash
+docker-compose down
+~~~
+
+---
+
+### 6. 참고 사항
+- MongoDB 데이터는 `mongo-data` 볼륨에 저장되어 영속성을 가집니다.
+- 서비스별 포트 매핑 및 네트워크 설정은 `docker-compose.yml` 파일을 참고하세요.
+
+</details>
+
+
+
+   
+<details>
+<summary><h2 style="display: inline; font-weight: bold;"> 프로젝트 진행 중 느낀 점 </h2></summary>
+
+### 1. MSA 적용과 TypeScript/NestJS 생태계 실전 적응 과정
+MSA는 AWSKRUG 세션 등을 통해 개념적으로 익숙하다고 생각했지만, 실제로 처음 프로젝트에 적용해보니 서비스 간의 통신, 네트워크 구성, 데이터 흐름 등에서 많은 어려움이 있었습니다.  
+게다가 이번 프로젝트는 **TypeScript와 Node.js, 그리고 NestJS 프레임워크를 처음으로 실전에서 다뤄본 경험**이었기 때문에, 언어와 프레임워크의 문법, 아키텍처 패턴, 비동기 처리 방식 등을 익히는 데 많은 시간이 필요했습니다.  
+또한 개발 환경도 기존에 익숙한 IntelliJ와 달리 Visual Studio Code를 처음 사용하면서, 확장 플러그인 설치와 설정에도 적응 기간이 필요했습니다.  
+그럼에도 불구하고 시행착오를 거치며 프로젝트 구조를 직접 설계하고 개선해나가면서 점차 익숙해졌고, Docker Compose를 활용해 서비스 간 연결을 구성하며 **MSA 구조와 새로운 기술 스택의 장점**을 직접 체감할 수 있었습니다.
+
+---
+
+### 2. ESLint 사용 중 답답함과 개발 시간 지연
+코드 품질 관리를 위해 ESLint를 도입했지만, `npm install`로 의존성을 추가한 후에도 Visual Studio Code에서 라이브러리 함수들이 바로 인식되지 않아 오류가 지속되었습니다.  
+문제는 IDE를 재시작하면 해결되는 상황이었지만, 당시에는 이 해결 방법을 몰라 ESLint 오류의 원인을 찾느라 많은 시간을 소모하게 되었습니다.  
+그로 인해 개발 흐름이 잦은 오류와 시행착오로 끊기며 예상보다 시간이 지연되었고, 개발 초기의 생산성이 크게 떨어졌습니다.  
+이후에는 ESLint와 IDE 간의 동기화 문제를 이해하고, 재시작을 통해 문제를 빠르게 해결할 수 있게 되었습니다.
+
+</details>
 

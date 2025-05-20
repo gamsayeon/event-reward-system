@@ -113,7 +113,7 @@ NestJS 기반 마이크로서비스 아키텍처(MSA)로 설계된 **이벤트 �
   ![image](https://github.com/user-attachments/assets/d0bfd6f1-6f16-4850-a6c7-8f86f98197dd)
 
   <details>
-    <summary>View Detail Sequence</summary>
+    <summary><h2 style="display: inline; font-weight: bold;">View Detail Sequence</h2></summary>
 
    ### 유저 등록 시퀀스
    ![image](https://github.com/user-attachments/assets/089cede7-bde7-4c43-9c4c-60a36a9cb415)

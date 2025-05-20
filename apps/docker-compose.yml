@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  auth:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    container_name: auth-service
+    networks:
+      - internal_net
+    expose:
+      - "3001"
+
+  event:
+    build:
+      context: ./event
+      dockerfile: Dockerfile
+    container_name: event-service
+    networks:
+      - internal_net
+    expose:
+      - "3002"
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: gateway-service
+    ports:
+      - "3000:3000"
+    depends_on:
+      - auth
+      - event
+    networks:
+      - internal_net
+
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - internal_net
+    expose:
+      - "27017"
+
+networks:
+  internal_net:
+    driver: bridge
+
+volumes:
+  mongo-data:

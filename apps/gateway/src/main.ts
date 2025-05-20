@@ -14,14 +14,18 @@ async function bootstrap() {
   const port = configService.get<number>('PORT') ?? 3000;
   const jwtSecret = configService.get<string>('AUTH_JWT_SECRET') ?? 'default_secret_key';
 
+  // /auth 프록시 설정 (JWT 검증 제외)
+  app.use(
+    '/auth',
+    createProxyMiddleware({
+      target: authTarget,
+      changeOrigin: true,
+    }),
+  );
+
   // JWT 검증 미들웨어
   app.use(async (req, res, next) => {
     try {
-      // '/auth' 경로는 별도 서버니까 JWT 검증 제외
-      if (req.path.startsWith('/auth')) {
-        return next();
-      }
-
       const authHeader = req.headers['authorization'];
       if (!authHeader) throw new UnauthorizedException('Authorization header missing');
 
@@ -71,15 +75,6 @@ async function bootstrap() {
 
     next();
   });
-
-  // /auth 프록시 설정 (JWT 검증 제외)
-  app.use(
-    '/auth',
-    createProxyMiddleware({
-      target: authTarget,
-      changeOrigin: true,
-    }),
-  );
 
   app.use('/events', (req, res, next) => {
     const user = (req as any).user;
